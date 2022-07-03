@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 
 router.post('/', (req, res) => {
     User.findOne({email : req.body.email}).then(user => {
-        if(!user) return res.status(401).json({message: 'Email not found - Login failed !'});
+        if(!user) return res.status(401).json({message: 'Email is incorrect !'});
 
        user.authenticate(req.body.password).then(valid => {
            if(valid) {
@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
             // const {password, ...userData} = user.toObject();
             // res.status(200).json({message: 'logged in successfully', token, userData});
            }else {
-            return res.status(401).json({message: 'Password not match - Login failed !'});
+            return res.status(401).json({message: 'Password is incorrect !'});
            }
        })
     })

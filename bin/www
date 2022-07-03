@@ -41,9 +41,7 @@ const connectionString = config.dbConnectionString;
 // })
 
 console.log('Trying to connect the DB .....');
-mongoose.connect(connectionString).then(res => {
-  console.log('DB Connected successfully')
-})
+mongoose.connect(connectionString);
 server.listen(port)
  
 server.on('error', onError);

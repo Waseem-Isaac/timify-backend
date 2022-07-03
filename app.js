@@ -4,7 +4,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cors = require('cors')
 
-var auth = require('./routes/auth')
+var login = require('./routes/login')
 var users = require('./routes/users');
 var posts = require('./routes/posts');
 var projects = require('./routes/projects');
@@ -21,7 +21,7 @@ app.use(cookieParser())
 
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
-app.use('/api/v1/auth', auth)
+app.use('/api/v1/login', login)
 app.use('/api/v1/users', users);
 app.use('/api/v1/posts', isAuthenticated, posts);
 app.use('/api/v1/projects', projects);

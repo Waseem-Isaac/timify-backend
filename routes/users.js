@@ -26,11 +26,11 @@ router.post('/' , async(req , res) => {
         }
     }
 
-   newUser = new User({ name : req.body.name , email: req.body.email , password: req.body.password});
+   newUser = new User({ username : req.body.username , email: req.body.email , password: req.body.password});
    newUser['password'] = req.body.password ? await bcrypt.hash(req.body.password, 10) : '';
    newUser['picture'] = req.body.picture ? 
          req.body.picture : 
-        `https://ui-avatars.com/api/?background=f0f0f0&color=29a0e9&name=${req.body.name}`
+        `https://ui-avatars.com/api/?background=f0f0f0&color=29a0e9&name=${req.body.username}`
    User.create(newUser).then(user => {
        res.status(200).send({message : 'User added successfully'})
    }).catch(err => {
