@@ -6,7 +6,7 @@ var cors = require('cors')
 
 var login = require('./routes/login')
 var users = require('./routes/users');
-var posts = require('./routes/posts');
+var tasks = require('./routes/tasks');
 var projects = require('./routes/projects');
 var isAuthenticated = require('./shared/isAuthenticated');
 const { uploadMiddleWare, upload } = require('./shared/upload');
@@ -23,7 +23,7 @@ app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.use('/api/v1/login', login)
 app.use('/api/v1/users', users);
-app.use('/api/v1/posts', isAuthenticated, posts);
+app.use('/api/v1/tasks', isAuthenticated, tasks);
 app.use('/api/v1/projects', projects);
 
 app.post('/api/v1/upload' , upload.single('image'), uploadMiddleWare)
