@@ -8,19 +8,7 @@ const taskSchema = new mongoose.Schema({
     },
     startTime : { type: Date, required: true, default: Date.now },
     endTime : { type: Date, required: false },
-    period  : {
-        type: {
-            hours: {type: Number, default: 0},
-            minutes: {type: Number, default: 0},
-            seconds: {type: Number, default: 0},
-    
-            days: {type: Number, default: 0, required: false},
-            months: {type: Number, default: 0, required: false},
-            year: {type: Number, default: 0, required: false}
-        }, 
-        required: false
-    },
-
+    period  : { type: String, required: false},
     user: { 
         type : mongoose.Schema.Types.ObjectId , 
         ref : 'User',

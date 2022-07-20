@@ -27,7 +27,7 @@ const jwt = require('jsonwebtoken');
 
     Task.find({user: decodedToken._id , ...query,...select, ...cursor})
               .populate('project', 'name')
-              .sort({ createdAt: -1 })
+              .sort({ createdAt: 'desc' })
     .exec(function (err, tasks) {
       if (err) return res.status(500).json({message: err.message})
       res.status(200).json(tasks.filter(p => p.user))
@@ -75,6 +75,21 @@ const jwt = require('jsonwebtoken');
       res.status(500).json({message: err.message});
     })
   })
+
+
+   // =============================== 
+  // Delete Multiple by id
+  router.delete('/bulk', function(req, res) {
+    Task.deleteMany({_id: { $in: req.body['ids']}}).then(result => {
+      if(!result) return res.status(400).json({message: 'Failed to delete tasks!' })
+
+      // pusher.trigger('Tasks-channel', 'TaskDeleted', { taskId: req.params.id }, {socket_id: req.query.socketId});
+      res.status(200).json({message: 'Tasks deleted successfully', task: result});
+    }).catch(err => {
+      res.status(500).catch({message: err.message});
+    })
+  })
+
 
   // =============================== 
   // Delete Task by id
