@@ -1,13 +1,38 @@
 var express = require('express');
 var router = express.Router();
-var bcrypt = require('bcrypt');
 
 var User = require('../models/user');
+const bcrypt = require('bcrypt');
+
 const config = require('../shared/config');
+
 
 // Get all users
 router.get('/' , (req , res) => {
-   User.find().then(users => { res.status(200).json(users); }).catch(err => { res.status(500).send({message: err.message})})
+    User.aggregate([
+    {
+        $lookup: {
+            from: "tasks", // "collection to join"
+            localField: "_id" , //field from the current documents
+            foreignField: "user", //field from the documents of the "collection to join"
+            as: "tasks"// output
+        },
+    },
+    {
+        $project: {
+            _id: "$_id",
+            email: "$email",
+            password:  "$password",
+            picture:  "$picture",
+            username: "$username",
+            tasksCount:{$size:"$tasks"}
+        }
+    }
+   ], function(error, data) {
+        if(error) {throw error}
+        
+        res.status(200).json(data); 
+    }).catch(err => { res.status(500).send({message: err.message})})
 })
 
 router.get('/:id', (req , res) => {

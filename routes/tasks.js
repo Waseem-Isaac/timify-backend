@@ -15,7 +15,7 @@ const jwt = require('jsonwebtoken');
 // });
 
   // =============================== 
-  // Get all Tasks
+  // Get all tasks
   router.get('/', query(), function({ querymen: { query, select, cursor }, ...req}, res, next) {
     // Will return only the tasks per its user.
     const authHeader = String(req.headers['authorization'] || '');
@@ -35,7 +35,7 @@ const jwt = require('jsonwebtoken');
   });
 
   // =============================== 
-  // Get Task by id 
+  // Get task by id 
   router.get('/:id' , (req , res ) => {
     Task.findById(req.params.id)
           .populate('project', 'name')
@@ -48,7 +48,7 @@ const jwt = require('jsonwebtoken');
   });
 
   // =============================== 
-  // Add Task
+  // Add task
   router.post('/', function(req,res) {
    var newTask = new Task({...req.body});
  
@@ -61,14 +61,13 @@ const jwt = require('jsonwebtoken');
   })
 
   // =============================== 
-  // Update Task by id
+  // Update task by id
   router.put('/:id', async function(req, res) {
     await Task.findByIdAndUpdate(new ObjectId(req.params.id), {
      ...req.body
     }, {runValidators: true, new: true})
     .populate('project', 'name')
     .then(result => {
-      console.log(result)
       if(!result) return res.status(404).json({message: 'Task with id :( ' +req.params.id+ ' )is not found' })
       res.status(200).json({message: 'Task updated successfully', task: result});
     }).catch(err => {
@@ -76,9 +75,8 @@ const jwt = require('jsonwebtoken');
     })
   })
 
-
    // =============================== 
-  // Delete Multiple by id
+  // Delete multiple by id
   router.delete('/bulk', function(req, res) {
     Task.deleteMany({_id: { $in: req.body['ids']}}).then(result => {
       if(!result) return res.status(400).json({message: 'Failed to delete tasks!' })
@@ -89,7 +87,6 @@ const jwt = require('jsonwebtoken');
       res.status(500).catch({message: err.message});
     })
   })
-
 
   // =============================== 
   // Delete Task by id
