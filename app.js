@@ -8,6 +8,8 @@ var login = require('./routes/login')
 var users = require('./routes/users');
 var tasks = require('./routes/tasks');
 var projects = require('./routes/projects');
+var reports = require('./routes/reports');
+
 var isAuthenticated = require('./shared/isAuthenticated');
 const { uploadMiddleWare, upload } = require('./shared/upload');
 
@@ -25,6 +27,8 @@ app.use('/api/v1/login', login)
 app.use('/api/v1/users', users);
 app.use('/api/v1/tasks', isAuthenticated, tasks);
 app.use('/api/v1/projects', projects);
+app.use('/api/v1/reports', reports);
+
 
 app.post('/api/v1/upload' , upload.single('image'), uploadMiddleWare)
 

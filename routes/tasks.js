@@ -15,7 +15,7 @@ const jwt = require('jsonwebtoken');
 // });
 
   // =============================== 
-  // Get all tasks
+  // Get tasks for a user.
   router.get('/', query(), function({ querymen: { query, select, cursor }, ...req}, res, next) {
     // Will return only the tasks per its user.
     const authHeader = String(req.headers['authorization'] || '');
@@ -27,6 +27,19 @@ const jwt = require('jsonwebtoken');
 
     Task.find({user: decodedToken._id , ...query,...select, ...cursor})
               .populate('project', 'name')
+              .populate('user', 'username')
+              .sort({ createdAt: 'desc' })
+    .exec(function (err, tasks) {
+      if (err) return res.status(500).json({message: err.message})
+      res.status(200).json(tasks.filter(p => p.user))
+    })
+  });
+
+  // Get all tasks fo a all users.
+  router.get('/all', query(), function({ querymen: { query, select, cursor }, ...req}, res, next) {
+    Task.find({...query,...select, ...cursor})
+              .populate('project', 'name')
+              .populate('user', 'username')
               .sort({ createdAt: 'desc' })
     .exec(function (err, tasks) {
       if (err) return res.status(500).json({message: err.message})

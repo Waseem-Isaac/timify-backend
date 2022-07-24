@@ -4,8 +4,18 @@ var ObjectId = require('mongodb').ObjectId;
 var Project = require('../models/project');
 
   // =============================== 
-  // Get all projects
+  // Get projects
   router.get('/', function(req, res, next) {
+    Project.find().then(projects => {
+        res.status(200).json(projects);
+    }).catch(err => {
+        res.status(500).json({message: err.message});
+    })
+  });
+
+  // =============================== 
+  // Get all projects
+  router.get('/all', function(req, res, next) {
     Project.find().then(projects => {
         res.status(200).json(projects);
     }).catch(err => {
