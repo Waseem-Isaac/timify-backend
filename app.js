@@ -24,10 +24,10 @@ app.use(cookieParser())
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.use('/api/v1/login', login)
-app.use('/api/v1/users', users);
+app.use('/api/v1/users',isAuthenticated, users);
 app.use('/api/v1/tasks', isAuthenticated, tasks);
-app.use('/api/v1/projects', projects);
-app.use('/api/v1/reports', reports);
+app.use('/api/v1/projects',isAuthenticated, projects);
+app.use('/api/v1/reports',isAuthenticated, reports);
 
 
 app.post('/api/v1/upload' , upload.single('image'), uploadMiddleWare)
