@@ -24,11 +24,11 @@ const jwt = require('jsonwebtoken');
       const token = authHeader.substring(7, authHeader.length);
       decodedToken = jwt.decode(token) ;
     }
-
+    // Task.deleteMany({user: decodedToken._id }).then() ;; quickly remove all tasks for the current user.
     Task.find({user: decodedToken._id , ...query,...select, ...cursor})
               .populate('project', 'name')
               .populate('user', 'username')
-              .sort({ createdAt: 'desc' })
+              .sort({ endTime: 'desc' })
     .exec(function (err, tasks) {
       if (err) return res.status(500).json({message: err.message})
       res.status(200).json(tasks.filter(p => p.user))
@@ -86,6 +86,20 @@ const jwt = require('jsonwebtoken');
     }).catch(err => {
       res.status(500).json({message: err.message});
     })
+  })
+
+  // =============================== 
+  // Update multiple tasks by id
+  router.put('/', async function(req, res) {
+    req.body.tasks.forEach(async task => {
+      await Task.findByIdAndUpdate(new ObjectId(task?._id), {
+         description: task?.description
+      }, {runValidators: true, new: true}).catch(err => {
+        res.status(500).json({err});
+      })
+    });
+
+    await res.status(200).json({message: 'Tasks updated successfully'});
   })
 
    // =============================== 
