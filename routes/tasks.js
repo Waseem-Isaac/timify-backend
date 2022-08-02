@@ -4,6 +4,7 @@ var ObjectId = require('mongodb').ObjectId;
 var query = require('querymen').middleware;
 var Task = require('../models/task');
 const jwt = require('jsonwebtoken');
+const { now } = require('mongoose');
 
 // const Pusher = require("pusher");
 
@@ -24,26 +25,53 @@ const jwt = require('jsonwebtoken');
       const token = authHeader.substring(7, authHeader.length);
       decodedToken = jwt.decode(token) ;
     }
-    // Task.deleteMany({user: decodedToken._id }).then() ;; quickly remove all tasks for the current user.
-    Task.find({user: decodedToken._id , ...query,...select, ...cursor})
-              .populate('project', 'name')
-              .populate('user', 'username')
-              .sort({ endTime: 'desc' })
-    .exec(function (err, tasks) {
-      if (err) return res.status(500).json({message: err.message})
-      res.status(200).json(tasks.filter(p => p.user))
-    })
+    // // quickly remove all tasks for the current user.
+    // Task.deleteMany({user: decodedToken._id }).then() 
+    
+    Task.find({
+      user: decodedToken._id, 
+      // $or: [
+      //     {endTime: {"$exists": false}},
+      //     {endTime: { "$lte": req.query?.['before'] ? new Date(req.query?.['before']) : new Date()}}
+      //   ]
+    }
+    // , {}, {limit: 4}
+    ).populate('project', 'name')
+      .populate('user', 'username')
+      .sort({  endTime: 'desc'})
+      .exec(async function (err, tasks) {
+        if (err) return res.status(500).json({ message: err.message })
+
+        res.status(200).json(tasks.filter(p => p.user))
+        // let overalLastTask = await Task.findOne({user: decodedToken._id, "endTime": { $ne: null } },{}).sort('endTime');
+        // let lastTask = tasks[tasks.length-1];
+        // res.status(200).json({
+        //   data: tasks.filter(p => p.user),
+        //   pagination: {
+        //     overalLastDate: overalLastTask?.endTime
+        //   }
+        // })
+      })
   });
 
   // Get all tasks fo a all users.
   router.get('/all', query(), function({ querymen: { query, select, cursor }, ...req}, res, next) {
-    Task.find({...query,...select, ...cursor})
+    Task.find(query,select,cursor)
               .populate('project', 'name')
               .populate('user', 'username')
-              .sort({ createdAt: 'desc' })
-    .exec(function (err, tasks) {
+              .sort({ endTime: 'desc' })
+    .exec(async function (err, tasks) {
       if (err) return res.status(500).json({message: err.message})
-      res.status(200).json(tasks.filter(p => p.user))
+
+      let count = await Task.count();
+
+      res.status(200).json({
+        data: tasks.filter(p => p.user),
+        pagination: {
+          count,
+          lastPage: Math.ceil(count / cursor?.limit)
+        }
+      })
     })
   });
 

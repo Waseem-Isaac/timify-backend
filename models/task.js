@@ -8,6 +8,10 @@ const taskSchema = new mongoose.Schema({
     },
     startTime : { type: Date, required: true, default: Date.now },
     endTime : { type: Date, required: false },
+    // hasEndTime : { 
+    //     type: Boolean,
+    //     // default: true,
+    // },
     period  : { type: String, required: false},
     user: { 
         type : mongoose.Schema.Types.ObjectId , 
@@ -19,7 +23,17 @@ const taskSchema = new mongoose.Schema({
         ref : 'Project',
         required: false
     }
-}, {versionKey : false , timestamps: true});
+}, {versionKey : false , timestamps: true
+    // , toJSON: { virtuals: true },
+    // toObject: { virtuals: true }
+});
+
+
+// taskSchema.virtual('hasEndTime').get(function(){
+//     return !!this.endTime;
+// }).set(function(endTime) {
+//     endTime = this.endTime;
+// });
 
 // taskSchema.plugin(mongooseKeywords, {paths: ['content']});
 
