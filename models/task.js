@@ -22,6 +22,10 @@ const taskSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId , 
         ref : 'Project',
         required: false
+    },
+
+    periodAsANumber: {
+        type: Number, required: false
     }
 }, {versionKey : false , timestamps: true
     // , toJSON: { virtuals: true },
@@ -29,11 +33,15 @@ const taskSchema = new mongoose.Schema({
 });
 
 
-// taskSchema.virtual('hasEndTime').get(function(){
-//     return !!this.endTime;
-// }).set(function(endTime) {
-//     endTime = this.endTime;
-// });
+taskSchema.pre('save', async function (next) {
+    this.periodAsANumber = await (new Date(this.get('endTime')).getTime() - new Date(this.get('startTime')).getTime() || 0);
+    next();
+});
+
+taskSchema.pre('findOneAndUpdate', async function (next) {
+    this._update.periodAsANumber = await (new Date(this.get('endTime')).getTime() - new Date(this.get('startTime')).getTime() || 0);
+    next();
+});
 
 // taskSchema.plugin(mongooseKeywords, {paths: ['content']});
 

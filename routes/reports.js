@@ -13,8 +13,21 @@ var Project = require('../models/project');
       projects: await Project.count(),
       team: await User.count(),
     });
-    
+
   });
 
+  // Get the longest 5 tasks.
+  router.get('/tasks', function(res,res) {
+    Task.find()
+    .populate('project', 'name')
+    .populate('user', 'username')
+    .sort({ periodAsANumber: 'desc'})
+    .limit(4)
+    .exec(function (err, tasks) {
+      if (err) return res.status(500).json({ message: err.message })
+      
+      res.status(200).json(tasks.filter(p => p.user))
+    })    
+  })
 
 module.exports = router;
