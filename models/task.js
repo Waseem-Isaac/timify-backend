@@ -39,7 +39,9 @@ taskSchema.pre('save', async function (next) {
 });
 
 taskSchema.pre('findOneAndUpdate', async function (next) {
-    this._update.periodAsANumber = await (new Date(this.get('endTime')).getTime() - new Date(this.get('startTime')).getTime() || 0);
+    if(!!this.get('endTime')){
+        this._update.periodAsANumber =  await (new Date(this.get('endTime')).getTime() - new Date(this.get('startTime')).getTime() || 0);
+    }
     next();
 });
 

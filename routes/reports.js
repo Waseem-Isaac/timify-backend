@@ -17,7 +17,7 @@ var Project = require('../models/project');
   });
 
   // Get the longest 5 tasks.
-  router.get('/tasks', function(res,res) {
+  router.get('/top-tasks', function(res,res) {
     Task.find()
     .populate('project', 'name')
     .populate('user', 'username')
@@ -28,6 +28,16 @@ var Project = require('../models/project');
       
       res.status(200).json(tasks.filter(p => p.user))
     })    
+  })
+
+   // Get the longest 5 tasks.
+   router.get('/top-users', function(res,res) {
+    res.redirect('/api/v1/users'); 
+  })
+
+   // Get the longest 5 tasks.
+   router.get('/top-projects', function(res,res) {
+    res.redirect('/api/v1/projects/all'); 
   })
 
 module.exports = router;

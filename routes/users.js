@@ -25,14 +25,17 @@ router.get('/' , (req , res) => {
             password:  "$password",
             picture:  "$picture",
             username: "$username",
-            tasksCount:{$size:"$tasks"}
+            tasksCount:{$size:"$tasks"},
+            tasksTime: {$sum: "$tasks.periodAsANumber"}
         }
     }
    ], function(error, data) {
         if(error) {throw error}
         
         res.status(200).json(data); 
-    }).catch(err => { res.status(500).send({message: err.message})})
+    })
+    .sort({ tasksTime: 'desc'})
+    .catch(err => { res.status(500).send({message: err.message})})
 })
 
 router.get('/:id', (req , res) => {
