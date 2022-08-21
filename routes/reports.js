@@ -12,6 +12,16 @@ var Project = require('../models/project');
       tasks: await Task.count(),
       projects: await Project.count(),
       team: await User.count(),
+      totalTime: await Task.aggregate([
+        { $unwind: "$periodAsANumber" },
+        { $group: { 
+          _id: null,
+           value: {
+            $sum:"$periodAsANumber"
+          }
+        }}
+      
+      ])
     });
 
   });
