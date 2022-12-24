@@ -1,3 +1,3 @@
 # timify-backend
 
-https://timify-me.herokuapp.com
+https://timify-32578.web.app
