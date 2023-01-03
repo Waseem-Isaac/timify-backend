@@ -17,9 +17,9 @@ const { now } = require('mongoose');
 
   // =============================== 
   // Get tasks for a user.
-  router.get('/', query(), function({ querymen: { query, select, cursor }, ...req}, res, next) {
+  router.get('/',function(req, res, next) {
     // Will return only the tasks per its user.
-    const authHeader = String(req.headers?.['authorization'] || req.headers?.['Authorization'] || '');
+    const authHeader = String(req.headers?.['authorization'] || '');
     let decodedToken;
     if (authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7, authHeader.length);
